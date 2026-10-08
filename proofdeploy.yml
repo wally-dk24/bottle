@@ -1,0 +1,11 @@
+# proofdeploy.yml — bottle fork demo
+#
+# The "service" is the adapter app (demo/app.py), which exposes bottle's
+# static_file() over HTTP. The bottle version under test is selected by the
+# ref being verified (the harness puts the ref's tree on PYTHONPATH).
+#
+# Required: build, start, readiness. No migrate/seed (no database).
+
+build: "python3 -c \"import bottle; print('bottle', bottle.__version__)\""
+start: "python3 demo/app.py"
+readiness: "http://localhost:8471/health"

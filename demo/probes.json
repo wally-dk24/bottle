@@ -1,0 +1,54 @@
+{
+  "probes": [
+    {
+      "description": "RFC 7232 sec 3.3: If-Modified-Since MUST be ignored when If-None-Match is present. Non-matching etag plus a fresh IMS date returns 200 with the file, not 304.",
+      "expect": {
+        "contains": "Hello from the ProofDeploy bottle demo.",
+        "status": 200
+      },
+      "id": "if-none-match-overrides-if-modified-since",
+      "request": {
+        "headers": {
+          "If-Modified-Since": "${NOW_HTTP_DATE}",
+          "If-None-Match": "\"no-match\""
+        },
+        "method": "GET",
+        "path": "/files/hello.txt"
+      },
+      "type": "http"
+    },
+    {
+      "description": "Guard: a non-matching If-None-Match on its own still returns 200 with the file.",
+      "expect": {
+        "contains": "Hello from the ProofDeploy bottle demo.",
+        "status": 200
+      },
+      "id": "non-matching-etag-alone-returns-200",
+      "request": {
+        "headers": {
+          "If-None-Match": "\"no-match\""
+        },
+        "method": "GET",
+        "path": "/files/hello.txt"
+      },
+      "type": "http"
+    },
+    {
+      "description": "Guard: an If-Modified-Since older than the file mtime still returns 200 with the file (IMS path intact).",
+      "expect": {
+        "contains": "Hello from the ProofDeploy bottle demo.",
+        "status": 200
+      },
+      "id": "old-ims-returns-200-with-file",
+      "request": {
+        "headers": {
+          "If-Modified-Since": "Thu, 01 Jan 1970 00:00:00 GMT"
+        },
+        "method": "GET",
+        "path": "/files/hello.txt"
+      },
+      "type": "http"
+    }
+  ],
+  "version": "0"
+}
